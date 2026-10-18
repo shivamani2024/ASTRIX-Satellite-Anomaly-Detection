@@ -6,8 +6,7 @@ FROM base AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 COPY package*.json ./
-RUN npm ci
-
+RUN npm install --include=optional
 # Stage 2: Build source
 FROM base AS builder
 WORKDIR /app
