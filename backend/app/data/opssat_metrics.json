@@ -1,0 +1,184 @@
+{
+  "dataset_name": "ESA OPS-SAT Anomaly Detection Benchmark (OPSSAT-AD)",
+  "source": "https://www.kaggle.com/datasets/orvile/satellite-telemetry-data-anomaly-prediction",
+  "zenodo_doi": "10.5281/zenodo.15108715",
+  "total_samples": 2123,
+  "train_samples": 1594,
+  "test_samples": 529,
+  "total_anomalies": 434,
+  "test_metrics": {
+    "accuracy": 0.9546,
+    "precision": 0.887,
+    "recall": 0.9027,
+    "f1_score": 0.8947,
+    "roc_auc": 0.9884,
+    "confusion_matrix": [
+      [
+        403,
+        13
+      ],
+      [
+        11,
+        102
+      ]
+    ]
+  },
+  "feature_importances": [
+    {
+      "feature": "n_peaks",
+      "importance": 0.256
+    },
+    {
+      "feature": "diff2_peaks",
+      "importance": 0.095
+    },
+    {
+      "feature": "smooth10_n_peaks",
+      "importance": 0.0791
+    },
+    {
+      "feature": "kurtosis",
+      "importance": 0.0736
+    },
+    {
+      "feature": "diff_peaks",
+      "importance": 0.0657
+    },
+    {
+      "feature": "len",
+      "importance": 0.049
+    },
+    {
+      "feature": "gaps_squared",
+      "importance": 0.0454
+    },
+    {
+      "feature": "std",
+      "importance": 0.0407
+    },
+    {
+      "feature": "duration",
+      "importance": 0.0372
+    },
+    {
+      "feature": "diff2_var",
+      "importance": 0.0367
+    },
+    {
+      "feature": "skew",
+      "importance": 0.033
+    },
+    {
+      "feature": "mean",
+      "importance": 0.0305
+    },
+    {
+      "feature": "var_div_duration",
+      "importance": 0.0288
+    },
+    {
+      "feature": "sampling",
+      "importance": 0.0262
+    },
+    {
+      "feature": "var",
+      "importance": 0.0254
+    },
+    {
+      "feature": "len_weighted",
+      "importance": 0.0244
+    },
+    {
+      "feature": "diff_var",
+      "importance": 0.0218
+    },
+    {
+      "feature": "var_div_len",
+      "importance": 0.0216
+    },
+    {
+      "feature": "smooth20_n_peaks",
+      "importance": 0.0099
+    }
+  ],
+  "channel_breakdown": [
+    {
+      "channel": "CADC0872",
+      "total_segments": 132,
+      "anomalies": 32,
+      "accuracy": 0.9848
+    },
+    {
+      "channel": "CADC0873",
+      "total_segments": 153,
+      "anomalies": 31,
+      "accuracy": 0.9608
+    },
+    {
+      "channel": "CADC0874",
+      "total_segments": 52,
+      "anomalies": 23,
+      "accuracy": 0.9038
+    },
+    {
+      "channel": "CADC0884",
+      "total_segments": 36,
+      "anomalies": 0,
+      "accuracy": 1.0
+    },
+    {
+      "channel": "CADC0886",
+      "total_segments": 4,
+      "anomalies": 1,
+      "accuracy": 1.0
+    },
+    {
+      "channel": "CADC0888",
+      "total_segments": 64,
+      "anomalies": 12,
+      "accuracy": 0.9688
+    },
+    {
+      "channel": "CADC0890",
+      "total_segments": 2,
+      "anomalies": 2,
+      "accuracy": 1.0
+    },
+    {
+      "channel": "CADC0892",
+      "total_segments": 53,
+      "anomalies": 7,
+      "accuracy": 0.9245
+    },
+    {
+      "channel": "CADC0894",
+      "total_segments": 33,
+      "anomalies": 5,
+      "accuracy": 0.8485
+    }
+  ],
+  "features": [
+    "sampling",
+    "duration",
+    "len",
+    "mean",
+    "var",
+    "std",
+    "kurtosis",
+    "skew",
+    "n_peaks",
+    "smooth10_n_peaks",
+    "smooth20_n_peaks",
+    "diff_peaks",
+    "diff2_peaks",
+    "diff_var",
+    "diff2_var",
+    "gaps_squared",
+    "len_weighted",
+    "var_div_duration",
+    "var_div_len"
+  ],
+  "model_architecture": "Hybrid (Calibrated Random Forest Ensemble + Isolation Forest Zero-Day Detector)",
+  "trained_at": "2026-09-17T14:03:37.414680+00:00",
+  "status": "TRAINED_AND_DEPLOYED"
+}

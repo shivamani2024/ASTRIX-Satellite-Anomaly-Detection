@@ -1,0 +1,351 @@
+[
+  {
+    "sop_id": "SOP-ADCS-042",
+    "title": "Reaction Wheel Momentum Desaturation via Magnetorquer Cross-Coupling",
+    "subsystem": "ADCS",
+    "standard": "ECSS-E-ST-70-11C Rev 2 / ISRO LEO-ADCS-PRO-12",
+    "version": "v3.4.1",
+    "risk_level": "T2",
+    "summary": "Procedure to relieve accumulated angular momentum in 3-axis reaction wheels using geomagnetic torque interaction through magnetorquer coils, avoiding thruster propellant expenditure.",
+    "triggers": [
+      "Reaction wheel speed exceeds nominal upper threshold (RW_SPEED > 5500 RPM)",
+      "Attitude pointing error rate exceeds 0.05 deg/min with wheel saturation indicator",
+      "Calculated accumulated angular momentum H_rw > 0.85 * H_max (0.085 N·m·s)"
+    ],
+    "telemetry_signatures": [
+      "Reaction wheel RPM monotonic upward trend approaching or exceeding 5500 RPM",
+      "Attitude error divergence starting at 0.1 deg and escalating past 0.5 deg",
+      "Thermal panel bearing temperature rise delta > 5°C due to increased viscous friction",
+      "Bus voltage drops under sustained high motor drive torque demand"
+    ],
+    "root_causes": [
+      "Secular external disturbance torque (gravity gradient + aerodynamic drag) during solar storm",
+      "Tachometer sensor drift causing closed-loop bias accumulation",
+      "Prolonged high-inclination nadir-pointing hold during eclipse passage"
+    ],
+    "remediation_steps": [
+      "Verify geomagnetic field vector B from fluxgate magnetometer payload telemetry",
+      "Confirm satellite is within active line-of-sight communication window (LOS > 180s)",
+      "Configure magnetorquer cross-coupling gain matrix to orthogonal projection (M = -k * (H x B))",
+      "Execute safe desaturation pulse sequence on RW-02 and RW-03 over 4 orbital cycles",
+      "Verify reaction wheel deceleration rate does not exceed maximum allowable slew rate (0.2 deg/s^2)"
+    ],
+    "pre_flight_checks": [
+      {
+        "check_id": "CHK-ADCS-01",
+        "name": "Line of Sight Communication Window",
+        "condition": "COMM_LOS_REMAINING_S >= 180",
+        "threshold": "180s"
+      },
+      {
+        "check_id": "CHK-ADCS-02",
+        "name": "EPS Bus Voltage Margin",
+        "condition": "BUS_VOLTAGE_V >= 26.5",
+        "threshold": "26.5V"
+      },
+      {
+        "check_id": "CHK-ADCS-03",
+        "name": "Magnetorquer Thermal Headroom",
+        "condition": "MTQ_TEMP_C <= 65.0",
+        "threshold": "65.0°C"
+      },
+      {
+        "check_id": "CHK-ADCS-04",
+        "name": "Solar Array Illumination Geometry",
+        "condition": "SOLAR_INCIDENCE_DEG <= 35.0",
+        "threshold": "35.0 deg"
+      },
+      {
+        "check_id": "CHK-ADCS-05",
+        "name": "Digital Twin Kinematic Stability Margin",
+        "condition": "SIM_PEAK_SLEW_RATE_DEG_S <= 0.25",
+        "threshold": "0.25 deg/s"
+      },
+      {
+        "check_id": "CHK-ADCS-06",
+        "name": "No Concurrent Thruster Firing",
+        "condition": "PROP_VALVES_ALL_CLOSED == true",
+        "threshold": "CLOSED"
+      },
+      {
+        "check_id": "CHK-ADCS-07",
+        "name": "Operator Clearance Level",
+        "condition": "OPERATOR_CLEARANCE >= LEVEL-2",
+        "threshold": "LEVEL-2"
+      }
+    ],
+    "postconditions": [
+      "Reaction wheel speed returns to nominal operational range (2000 - 3200 RPM)",
+      "Pointing attitude error settles below 0.15 degrees within 120 seconds",
+      "Thermal equilibrium restored on wheel drive electronics",
+      "Cryptographic entry appended to mission audit ledger"
+    ],
+    "keywords": [
+      "reaction wheel",
+      "momentum saturation",
+      "desaturation",
+      "magnetorquer",
+      "attitude error",
+      "pointing drift",
+      "ANM-2048",
+      "ADCS",
+      "tachometer"
+    ],
+    "content": "SOP-ADCS-042: Reaction Wheel Momentum Desaturation via Magnetorquer Cross-Coupling. Applicable to LEO satellites experiencing reaction wheel saturation exceeding 5500 RPM and attitude error divergence above 0.50 degrees. Standard ECSS-E-ST-70-11C. Remediation requires verified geomagnetic B-field alignment, operator approval Level-2, pre-flight validation of bus voltage > 26.5V, and 300s lookahead kinematic digital twin simulation proving peak slew rate < 0.25 deg/s."
+  },
+  {
+    "sop_id": "SOP-ADCS-019",
+    "title": "Attitude Pointing Loss & Safe Sun-Pointing Transition",
+    "subsystem": "ADCS",
+    "standard": "ECSS-E-ST-70-11C Rev 2 / ISRO LEO-ADCS-SOP-05",
+    "version": "v2.8.0",
+    "risk_level": "T3",
+    "summary": "Emergency procedure when 3-axis pointing is completely lost or attitude error exceeds 3.0 degrees, placing satellite in coarse sun-pointing safe mode using coarse sun sensors and B-dot magnetic damping.",
+    "triggers": [
+      "Attitude pointing error > 3.0 deg sustained for > 30 seconds",
+      "Star tracker loss of lock on both optical heads simultaneously",
+      "Tumbler rate detected > 1.0 deg/sec on any body axis"
+    ],
+    "telemetry_signatures": [
+      "Attitude error rapidly diverging > 2.5 deg",
+      "Solar array output dropping below 120W",
+      "Reaction wheel runaway or multiple wheel tachometer failures"
+    ],
+    "root_causes": [
+      "Dual star tracker occultation or blindness due to lunar intrusion",
+      "Catastrophic gyro / IMU bias jump",
+      "Structural thermal shock causing optical bench deflection"
+    ],
+    "remediation_steps": [
+      "Transition ADCS state machine from 3-Axis Fine Nadir Pointing to Sun-Acquisition Safe Mode",
+      "Engage B-dot rate damping algorithm using magnetorquer coils",
+      "Orient +Z solar array normal towards sun vector using Coarse Sun Sensors",
+      "Inhibit payload instrument power to conserve battery state of charge"
+    ],
+    "pre_flight_checks": [
+      {
+        "check_id": "CHK-ADCS-11",
+        "name": "Coarse Sun Sensor Telemetry Valid",
+        "condition": "CSS_TELEMETRY_VALID == true",
+        "threshold": "TRUE"
+      },
+      {
+        "check_id": "CHK-ADCS-12",
+        "name": "Senior Flight Director Clearance",
+        "condition": "OPERATOR_CLEARANCE >= LEVEL-3",
+        "threshold": "LEVEL-3"
+      }
+    ],
+    "postconditions": [
+      "Body rates reduced to < 0.1 deg/s on all axes",
+      "Solar array generating > 180W continuously in sunlight",
+      "Battery state of charge stabilizing above 75%"
+    ],
+    "keywords": [
+      "sun pointing",
+      "safe mode",
+      "pointing loss",
+      "star tracker loss",
+      "b-dot",
+      "tumble damping"
+    ],
+    "content": "SOP-ADCS-019: Attitude Pointing Loss & Safe Sun-Pointing Transition. Applied when pointing error exceeds 3.0 deg or catastrophic loss of star trackers occurs. T3 senior gated emergency procedure commanding B-dot damping and coarse sun pointing."
+  },
+  {
+    "sop_id": "SOP-EPS-011",
+    "title": "Power Bus Undervoltage Mitigation & Autonomous Load Shedding",
+    "subsystem": "EPS",
+    "standard": "ECSS-E-ST-20C / ISRO LEO-EPS-SOP-03",
+    "version": "v3.0.0",
+    "risk_level": "T1",
+    "summary": "Autonomous and operator-guided protocols for handling primary 28V regulated power bus drops below safety threshold (26.5V).",
+    "triggers": [
+      "Main power bus voltage < 26.5V for more than 5 consecutive telemetry frames",
+      "Battery Depth of Discharge (DoD) exceeds 35% during eclipse",
+      "Solar array current unexpectedly below prediction by > 25%"
+    ],
+    "telemetry_signatures": [
+      "bus_voltage_v declining below 26.5V",
+      "solar_array_w diminished below 160W during sunlit orbital arc",
+      "power_margin_percent dropping below 60%"
+    ],
+    "root_causes": [
+      "Spacecraft off-pointing resulting in oblique solar array sun angle",
+      "Sustained peak current demand from ADCS actuators or high-power transmitter",
+      "Battery cell bypass switch trigger"
+    ],
+    "remediation_steps": [
+      "Command load shed Tier-1: Power down non-critical payload payloads and heaters",
+      "Verify battery charge regulator transitions into constant-current bulk charge",
+      "Coordinate with ADCS team to optimize solar array angle of incidence"
+    ],
+    "pre_flight_checks": [
+      {
+        "check_id": "CHK-EPS-01",
+        "name": "Essential Bus Current Stability",
+        "condition": "ESSENTIAL_BUS_CURRENT_A < 4.0",
+        "threshold": "4.0A"
+      }
+    ],
+    "postconditions": [
+      "Bus voltage restored to >= 27.8V",
+      "Battery state of charge trend positive",
+      "Power margin restored to > 70%"
+    ],
+    "keywords": [
+      "power bus",
+      "undervoltage",
+      "load shedding",
+      "battery dod",
+      "solar array",
+      "EPS",
+      "power margin"
+    ],
+    "content": "SOP-EPS-011: Power Bus Undervoltage Mitigation & Autonomous Load Shedding. Handles bus voltage drops below 26.5V or power margin < 60%. Mandates immediate payload shedding and solar array orientation check."
+  },
+  {
+    "sop_id": "SOP-THERMAL-005",
+    "title": "Reaction Wheel & Drive Electronics Thermal Excursion Remediation",
+    "subsystem": "THERMAL",
+    "standard": "ECSS-E-ST-31C / ISRO LEO-THM-SOP-07",
+    "version": "v1.9.0",
+    "risk_level": "T2",
+    "summary": "Mitigation steps when reaction wheel bearing or drive electronics temperature exceeds 45.0°C due to sustained high RPM or anomalous friction.",
+    "triggers": [
+      "thermal_panel_c > 45.0°C",
+      "Wheel bearing thermistor delta-T/dt > 0.5°C/min",
+      "Motor winding current correlated with thermal ramp"
+    ],
+    "telemetry_signatures": [
+      "thermal_panel_c climbing monotonically toward 45°C",
+      "reaction_wheel_rpm elevated > 5000 RPM simultaneously",
+      "Radiator cold plate temperature above seasonal model"
+    ],
+    "root_causes": [
+      "Bearing lubricant degradation under microgravity vacuum",
+      "Continuous peak motor torque demand during momentum saturation",
+      "Solar array back-radiation impingement on thermal louvers"
+    ],
+    "remediation_steps": [
+      "Initiate momentum desaturation to reduce wheel operating speed to < 3000 RPM",
+      "Rotate spacecraft attitude 15 degrees to shield radiator panel from albedo/solar flux",
+      "Activate auxiliary passive heat pipe loop valve if temperature exceeds 48°C"
+    ],
+    "pre_flight_checks": [
+      {
+        "check_id": "CHK-THM-01",
+        "name": "Heater Circuit Safe State",
+        "condition": "AUX_HEATERS_STATUS == OFF",
+        "threshold": "OFF"
+      }
+    ],
+    "postconditions": [
+      "Thermal panel temperature declining below 30.0°C",
+      "Wheel motor temperature stabilized within nominal operating envelope"
+    ],
+    "keywords": [
+      "thermal excursion",
+      "radiator",
+      "reaction wheel heating",
+      "bearing temperature",
+      "thermal_panel_c",
+      "overheating"
+    ],
+    "content": "SOP-THERMAL-005: Reaction Wheel & Drive Electronics Thermal Excursion Remediation. Applied when thermal panel or bearing temperatures cross 45.0°C. Coupled with wheel desaturation and attitude thermal roll adjustment."
+  },
+  {
+    "sop_id": "SOP-PROP-004",
+    "title": "Hydrazine / Cold Gas Thruster Assisted Momentum Dumping",
+    "subsystem": "PROPULSION",
+    "standard": "ECSS-E-ST-35C / ISRO LEO-PROP-SOP-02",
+    "version": "v2.1.0",
+    "risk_level": "T3",
+    "summary": "High-authority momentum unloading utilizing RCS pulse thrusters when magnetic torquers are insufficient due to orbit geometry or rapid divergence.",
+    "triggers": [
+      "Reaction wheel speed > 5800 RPM with magnetorquer duty cycle at 100%",
+      "Predicted time-to-saturation < 10 minutes",
+      "Geomagnetic field intensity B < 15 microTesla at equatorial pass"
+    ],
+    "telemetry_signatures": [
+      "reaction_wheel_rpm pinned near 6000 RPM redline",
+      "magnetorquer_current_a saturated at 1.0A without adequate momentum reduction"
+    ],
+    "root_causes": [
+      "Low magnetic field latitude pass during peak disturbance torque event",
+      "Magnetorquer driver coil impedance fault"
+    ],
+    "remediation_steps": [
+      "Verify thruster catbed temperature > 350°C and propellant tank pressure > 18 bar",
+      "Obtain Dual Senior Flight Director authorization (T3 Risk Gated)",
+      "Command 50ms discrete thruster pulses coupled with RW deceleration",
+      "Confirm propellant mass budget delta < 0.045 kg"
+    ],
+    "pre_flight_checks": [
+      {
+        "check_id": "CHK-PROP-01",
+        "name": "Thruster Tank Pressure Nominal",
+        "condition": "TANK_PRESSURE_BAR >= 18.0",
+        "threshold": "18.0 bar"
+      },
+      {
+        "check_id": "CHK-PROP-02",
+        "name": "Senior Controller Dual Sign-Off",
+        "condition": "DUAL_APPROVAL_CONFIRMED == true",
+        "threshold": "TRUE"
+      }
+    ],
+    "postconditions": [
+      "Wheel momentum relieved to < 2500 RPM",
+      "All thruster latch valves commanded CLOSED and pressure isolated"
+    ],
+    "keywords": [
+      "thruster pulse",
+      "propulsion",
+      "momentum dumping",
+      "reaction wheel",
+      "cold gas",
+      "hydrazine"
+    ],
+    "content": "SOP-PROP-004: Thruster Assisted Momentum Dumping. T3 Senior Flight Director gated procedure for high-authority wheel desaturation when magnetic torquers fail to relieve momentum."
+  },
+  {
+    "sop_id": "SOP-SAFE-001",
+    "title": "Autonomous Safe Mode Entry and Spacecraft Health Isolation",
+    "subsystem": "FDIR",
+    "standard": "ECSS-E-ST-70-11C / ISRO LEO-FDIR-01",
+    "version": "v4.0.0",
+    "risk_level": "T0",
+    "summary": "Top-level Failure Detection, Isolation and Recovery (FDIR) procedure executed by onboard autonomy or ground override to ensure vehicle survivability.",
+    "triggers": [
+      "Onboard watchdog timeout or fatal software exception",
+      "Critical power reserve breach (<24.0V)",
+      "Unrecoverable attitude divergence exceeding safe thresholds"
+    ],
+    "telemetry_signatures": [
+      "FDIR state flag switches to SAFE_HOLD",
+      "Payload sub-bus relays open",
+      "Transponder set to omni-directional low-rate telemetry beacon"
+    ],
+    "root_causes": [
+      "Multi-subsystem concurrent failure",
+      "Single Event Upset (SEU) in primary flight computer memory"
+    ],
+    "remediation_steps": [
+      "Isolate faulty subsystem bus",
+      "Broadcast emergency heartbeat beacon at 1200 bps",
+      "Await ground station pass for diagnostic dump"
+    ],
+    "pre_flight_checks": [],
+    "postconditions": [
+      "Spacecraft stable, thermally safe, positive power balance secured"
+    ],
+    "keywords": [
+      "safe mode",
+      "FDIR",
+      "spacecraft safety",
+      "autonomy",
+      "fault recovery"
+    ],
+    "content": "SOP-SAFE-001: Autonomous Safe Mode Entry and Spacecraft Health Isolation. Default spacecraft protection protocol isolating non-essential loads, activating low-rate omni communications, and prioritizing power and thermal safety."
+  }
+]
