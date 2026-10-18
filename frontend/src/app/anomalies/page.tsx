@@ -16,6 +16,7 @@ import {
 import { PageHeader } from "@/components/layout/PageHeader";
 import { useAnomalyStore } from "@/stores/anomalyStore";
 import { api } from "@/lib/api";
+import { API_BASE } from "@/lib/constants";
 
 export default function AnomalyCenterPage() {
   const activeAnomalies = useAnomalyStore((s) => s.activeAnomalies);
@@ -30,7 +31,7 @@ export default function AnomalyCenterPage() {
     api.getActiveAnomalies().then(setActiveAnomalies).catch(console.error);
 
     // Fetch the trained ESA OPS-SAT ML model metrics
-    fetch("http://localhost:8000/api/v1/anomalies/model-info")
+    fetch("`${API_BASE}/anomalies/model-info`")
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
         if (data) setModelInfo(data);
@@ -38,7 +39,7 @@ export default function AnomalyCenterPage() {
       .catch(console.error);
 
     // Fetch sample segments
-    fetch("http://localhost:8000/api/v1/anomalies/opssat-samples")
+    fetch("`${API_BASE}/anomalies/opssat-samples`")
       .then((res) => (res.ok ? res.json() : []))
       .then((data) => {
         if (data && data.length > 0) {
@@ -53,7 +54,7 @@ export default function AnomalyCenterPage() {
     const selected = samples[selectedSampleIndex];
     setEvaluating(true);
     try {
-      const res = await fetch("http://localhost:8000/api/v1/anomalies/evaluate", {
+      const res = await fetch("`${API_BASE}/anomalies/evaluate`", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(selected.features),

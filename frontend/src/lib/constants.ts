@@ -12,9 +12,13 @@ export const MISSION_CONFIG = {
   GROUND_STATION: "ISTRAC-BLR-01",
 };
 
-export const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:8000/api/v1";
-export const WS_URL = process.env.NEXT_PUBLIC_WS_URL || "ws://localhost:8000/ws/telemetry";
-
+export const API_BASE =
+  process.env.NEXT_PUBLIC_API_BASE ||
+  "https://astrix-backend-kqqu.onrender.com/api/v1";
+export const WS_URL =
+  process.env.NEXT_PUBLIC_WS_URL ||
+  "wss://astrix-backend-kqqu.onrender.com/ws/telemetry";
+  
 export const THRESHOLDS = {
   ATTITUDE_ERROR_DEG: 0.50,
   ATTITUDE_ERROR_NOMINAL: 0.08,
